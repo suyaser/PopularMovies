@@ -2,6 +2,7 @@ package com.training.yasser.popularmovies;
 
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
@@ -18,8 +19,10 @@ import android.view.View;
 
 import com.training.yasser.popularmovies.data.Movie;
 import com.training.yasser.popularmovies.utils.Connection;
+import com.training.yasser.popularmovies.utils.DataLoader;
+import com.training.yasser.popularmovies.utils.EndlessScrollListner;
 import com.training.yasser.popularmovies.utils.GridAdapter;
-import com.training.yasser.popularmovies.utils.MovieLoader;
+import com.training.yasser.popularmovies.utils.MovieParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +32,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final static String[] SORT = {"popular", "top_rated"};
     private final static String[] BAR_TITLE = {"popular", "top rated"};
     private static final String LIST_STATE = "ListState";
-    private static final String BASE_URL = "http://api.themoviedb.org/3/movie/";
-    private static final String API_KEY = "?api_key=336043898c0bea0b096943d0349c541c";
     private RecyclerView mRecyclerView;
-    GridAdapter mAdapter;
-    ArrayList<Movie> movies;
-    int sortOrder;
-    Parcelable state = null;
+    private GridAdapter mAdapter;
+    private ArrayList<Movie> movies;
+    private int sortOrder;
+    private Parcelable state = null;
+    private int mPage = 1;
+    private boolean mOrderChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }else{
             mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
         }
+
+        mRecyclerView.addOnScrollListener(new EndlessScrollListner((GridLayoutManager)mRecyclerView.getLayoutManager()) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                mPage++;
+                updateMovies();
+            }
+        });
 
         if (state != null) {
             mRecyclerView.getLayoutManager().onRestoreInstanceState(state);
@@ -102,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onDialogPositiveClick(int item) {
         if (sortOrder != item) {
             sortOrder = item;
+            mOrderChanged = true;
+            mPage = 1;
             updateMovies();
         }
     }
@@ -110,14 +123,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportActionBar().setTitle(BAR_TITLE[sortOrder]);
         if (Connection.checkConnection(this)) {
             LoaderManager loaderManager = getSupportLoaderManager();
-            loaderManager.initLoader(0, null, this);
+            loaderManager.restartLoader(0, null, this);
         }
     }
 
 
     @Override
     public void onClick(View view, int position) {
-        Log.d("MainACtivity", "OnCLick");
         Intent i = new Intent(this, DetailActivity.class);
         i.putExtra(DetailActivity.TAG, movies.get(position));
         startActivity(i);
@@ -125,15 +137,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        return new MovieLoader(this, BASE_URL+SORT[sortOrder]+API_KEY);
+        Resources resources = getResources();
+        DataLoader<Movie> loader = new DataLoader(this, resources.getString(R.string.base_url) + SORT[sortOrder] +
+                resources.getString(R.string.page) + mPage + resources.getString(R.string.api_key));
+        loader.setParser(new MovieParser());
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
         if(data != null && !data.isEmpty()){
-            mAdapter.swap(data);
-    }
-
+            if(mOrderChanged){
+                movies.clear();
+                mOrderChanged = false;
+            }
+            movies.addAll(data);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

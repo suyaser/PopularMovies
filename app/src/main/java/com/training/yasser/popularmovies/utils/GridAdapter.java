@@ -55,17 +55,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder>{
         this.onClickListener = onClickListener;
     }
 
-    public void swap(List<Movie> data) {
-        if (movies != null) {
-            movies.clear();
-            movies.addAll(data);
-        }
-        else {
-            movies = data;
-        }
-        notifyDataSetChanged();
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView imgView;
 

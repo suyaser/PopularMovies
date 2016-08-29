@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by yasser on 16/08/2016.
  */
-public class DataLoader extends AsyncTaskLoader<List<Movie>> {
+public class DataLoader<T> extends AsyncTaskLoader<List<T>> {
     private Connection mConnection;
     private Parser parser;
     public DataLoader(Context context, String requestUrl) {
@@ -24,7 +24,7 @@ public class DataLoader extends AsyncTaskLoader<List<Movie>> {
     }
 
     @Override
-    public List<Movie> loadInBackground() {
+    public List<T> loadInBackground() {
         String jsonResponse = mConnection.Download();
         if(jsonResponse == null || jsonResponse.isEmpty()){
             return null;

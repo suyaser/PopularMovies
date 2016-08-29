@@ -34,8 +34,8 @@ public class MovieParser extends Parser {
                         movie.getInt("popularity"),
                         movie.getString("release_date"),
                         movie.getInt("id"),
-                        list,
-                        movie.getString("backdrop_path")));
+                        movie.getString("backdrop_path"),
+                        list));
             }
         } catch (JSONException e) {
             e.printStackTrace();
