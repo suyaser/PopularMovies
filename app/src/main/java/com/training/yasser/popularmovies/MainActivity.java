@@ -60,11 +60,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter = new GridAdapter(this, movies);
         mAdapter.setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setHasFixedSize(true);
         boolean landscape = this.getResources().getBoolean(R.bool.is_landscape);
         if(landscape){
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this,4));
         }else{
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
         }
 
         mRecyclerView.addOnScrollListener(new EndlessScrollListner((GridLayoutManager)mRecyclerView.getLayoutManager()) {

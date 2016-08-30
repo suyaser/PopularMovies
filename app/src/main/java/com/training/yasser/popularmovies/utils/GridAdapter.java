@@ -1,6 +1,7 @@
 package com.training.yasser.popularmovies.utils;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,11 +58,13 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder>{
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView imgView;
+        CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             imgView = (ImageView) itemView.findViewById(R.id.GridImgItem);
-            itemView.setOnClickListener(this);
+            cardView = (CardView) itemView.findViewById(R.id.GridCardView);
+            cardView.setOnClickListener(this);
         }
 
         @Override
