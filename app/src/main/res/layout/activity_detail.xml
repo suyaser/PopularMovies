@@ -3,62 +3,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.training.yasser.popularmovies.DetailActivity">
 
     <include
-        layout="@layout/main_bar"
-        android:id="@+id/mainBar"
+        android:id="@+id/detailBar"
+        layout="@layout/details_bar"
         />
 
     <RelativeLayout
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/poster"
-            android:src="@drawable/placeholder"
-            android:layout_margin="8dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"/>
+            android:layout_margin="8dp"
+            android:src="@drawable/placeholder" />
 
         <TextView
             android:id="@+id/title"
-            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8dp"
             android:layout_toRightOf="@id/poster"/>
 
         <TextView
             android:id="@+id/date"
-            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/poster"
-            android:layout_below="@id/title"/>
+            android:layout_below="@id/title"
+            android:layout_margin="8dp"
+            android:layout_toRightOf="@id/poster" />
 
         <TextView
             android:id="@+id/rating"
-            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/poster"
-            android:layout_below="@id/date" />
+            android:layout_below="@id/date"
+            android:layout_margin="8dp"
+            android:layout_toRightOf="@id/poster" />
     </RelativeLayout>
 
     <TextView
-        android:layout_margin="16dp"
         android:id="@+id/plot"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
         android:layout_weight="1"/>
 
 </LinearLayout>

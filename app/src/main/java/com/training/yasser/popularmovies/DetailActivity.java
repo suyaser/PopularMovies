@@ -1,7 +1,7 @@
 package com.training.yasser.popularmovies;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,9 +25,11 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.mainBar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.detailBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
         mPoster = (ImageView)findViewById(R.id.poster);
         mTitle = (TextView)findViewById(R.id.title);
@@ -52,6 +54,5 @@ public class DetailActivity extends AppCompatActivity {
         mRating.setText(Integer.toString(mMovie.getmRating()));
         mDate.setText(mMovie.getmRelDate());
     }
-
 
 }
