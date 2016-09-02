@@ -14,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 public class SortDialogFragment extends DialogFragment {
 
     NoticeDialogListener mListener;
-    int checkedItem;
 
     @Override
     public void onAttach(Activity activity) {
@@ -36,15 +35,11 @@ public class SortDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                checkedItem = which;
+                                dismiss();
+                                mListener.onDialogPositiveClick(which);
                             }
-                        })
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(checkedItem);
-                    }
-                });
+                        }
+                );
 
         return builder.create();
     }

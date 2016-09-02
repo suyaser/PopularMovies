@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.training.yasser.popularmovies.MainActivity"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
-    <include
-        layout="@layout/main_bar"
+    android:background="#ddd"
+    android:orientation="vertical"
+    tools:context="com.training.yasser.popularmovies.MainActivity">
+
+
+    <android.support.v7.widget.Toolbar
         android:id="@+id/mainBar"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="@android:color/white" />
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/mainBar"
-        android:id="@+id/gridView"
-        android:numColumns="2"/>
-    </RelativeLayout>
+        android:padding="4dp" />
+</LinearLayout>

@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public class Movie implements Parcelable{
     private static final String BASE_URL = "http://image.tmdb.org/t/p/w185";
+    private static final String BASE_URL_HIGH = "http://image.tmdb.org/t/p/w500";
     private String mImg;
     private String mTitle;
     private String mPlot;
@@ -66,7 +67,7 @@ public class Movie implements Parcelable{
     }
 
     public String getmBackDrop() {
-        return mBackDrop;
+        return BASE_URL_HIGH + mBackDrop;
     }
 
     public ArrayList<Integer> getmGenre() {

@@ -2,16 +2,13 @@ package com.training.yasser.popularmovies;
 
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,18 +16,17 @@ import android.view.View;
 
 import com.training.yasser.popularmovies.data.Movie;
 import com.training.yasser.popularmovies.utils.Connection;
-import com.training.yasser.popularmovies.utils.DataLoader;
 import com.training.yasser.popularmovies.utils.EndlessScrollListner;
 import com.training.yasser.popularmovies.utils.GridAdapter;
-import com.training.yasser.popularmovies.utils.MovieParser;
+import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>>, SortDialogFragment.NoticeDialogListener, GridAdapter.ClickListener {
+public class MainActivity extends AppCompatActivity implements SortDialogFragment.NoticeDialogListener, GridAdapter.ClickListener, LoaderCallbacks.LoaderListener {
     private final static String MOVIES_STATE = "MoviesState";
     private final static String[] SORT = {"popular", "top_rated"};
-    private final static String[] BAR_TITLE = {"popular", "top rated"};
+    private final static String[] BAR_TITLE = {"Popular Movies", "Top Rated Movies"};
     private static final String LIST_STATE = "ListState";
     private RecyclerView mRecyclerView;
     private GridAdapter mAdapter;
@@ -59,16 +55,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView = (RecyclerView) findViewById(R.id.gridView);
         mAdapter = new GridAdapter(this, movies);
         mAdapter.setOnClickListener(this);
+        mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
-        boolean landscape = this.getResources().getBoolean(R.bool.is_landscape);
-        if(landscape){
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this,4));
-        }else{
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
-        }
-
-        mRecyclerView.addOnScrollListener(new EndlessScrollListner((GridLayoutManager)mRecyclerView.getLayoutManager()) {
+        final GridLayoutManager manager = new GridLayoutManager(this, getResources().getInteger(R.integer.main_grid_columbs));
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? manager.getSpanCount() : 1;
+            }
+        });
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.addOnScrollListener(new EndlessScrollListner((GridLayoutManager) mRecyclerView.getLayoutManager()) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 mPage++;
@@ -121,10 +119,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void updateMovies() {
-        getSupportActionBar().setTitle(BAR_TITLE[sortOrder]);
         if (Connection.checkConnection(this)) {
             LoaderManager loaderManager = getSupportLoaderManager();
-            loaderManager.restartLoader(0, null, this);
+            LoaderCallbacks<Movie> loaderCallbacks = new LoaderCallbacks<>(this);
+            Bundle bundle = new Bundle();
+            bundle.putString(LoaderCallbacks.SORT_ORDER_KEY, SORT[sortOrder]);
+            bundle.putInt(LoaderCallbacks.PAGE_KEY, mPage);
+            loaderManager.restartLoader(LoaderCallbacks.MOVIE_LOADER_ID, bundle, loaderCallbacks);
         }
     }
 
@@ -137,28 +138,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        Resources resources = getResources();
-        DataLoader<Movie> loader = new DataLoader(this, resources.getString(R.string.base_url) + SORT[sortOrder] +
-                resources.getString(R.string.page) + mPage + resources.getString(R.string.api_key));
-        loader.setParser(new MovieParser());
-        return loader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-        if(data != null && !data.isEmpty()){
-            if(mOrderChanged){
+    public void loadFinished(int id, List data) {
+        if (data != null && !data.isEmpty()) {
+            if (mOrderChanged) {
                 movies.clear();
                 mOrderChanged = false;
+                mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
             }
             movies.addAll(data);
             mAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-
     }
 }

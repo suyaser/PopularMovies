@@ -1,12 +1,9 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name">CEMA</string>
     <string name="action_settings">Settings</string>
     <string name="action_sort">sort</string>
     <string name="ok">ok</string>
     <string name="dialog_title_sort">sort</string>
-    <string name="base_url">http://api.themoviedb.org/3/movie/</string>
-    <string name="api_key">&amp;api_key=336043898c0bea0b096943d0349c541c</string>
-    <string name="page">\?page=</string>
     <string-array name="sort_array">
         <item>most popular</item>
         <item>top rated</item>
