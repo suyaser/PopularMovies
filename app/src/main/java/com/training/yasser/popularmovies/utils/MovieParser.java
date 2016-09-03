@@ -1,6 +1,7 @@
 package com.training.yasser.popularmovies.utils;
 
-import com.training.yasser.popularmovies.data.Movie;
+import com.training.yasser.popularmovies.models.Movie;
+import com.training.yasser.popularmovies.interfaces.Parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

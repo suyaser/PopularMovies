@@ -7,9 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
-    android:layout_margin="8dp"
-    app:cardElevation="8dp"
-    app:cardCornerRadius="5dp">
+    android:layout_margin="4dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,21 +24,22 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_alignLeft="@id/GridImgItem"
                 android:layout_alignParentBottom="true"
                 android:layout_alignRight="@id/GridImgItem"
                 android:layout_below="@id/GridImgItem"
                 android:background="@android:color/white"
+                android:paddingRight="2dp"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/MovieTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="6dp"
-                    android:layout_marginRight="2dp"
+                    android:padding="8dp"
                     android:maxLines="1"
                     android:ellipsize="end"
+                    style="@style/Base.TextAppearance.AppCompat.Small"
                     android:textColor="@android:color/black"
                     />
             </LinearLayout>

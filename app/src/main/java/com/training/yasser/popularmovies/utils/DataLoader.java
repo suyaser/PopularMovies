@@ -3,7 +3,8 @@ package com.training.yasser.popularmovies.utils;
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 
-import com.training.yasser.popularmovies.data.Movie;
+import com.training.yasser.popularmovies.interfaces.Parser;
+import com.training.yasser.popularmovies.network.Connection;
 
 import java.util.List;
 

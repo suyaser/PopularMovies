@@ -1,4 +1,4 @@
-package com.training.yasser.popularmovies;
+package com.training.yasser.popularmovies.activities;
 
 
 import android.content.Intent;
@@ -14,10 +14,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.training.yasser.popularmovies.data.Movie;
-import com.training.yasser.popularmovies.utils.Connection;
-import com.training.yasser.popularmovies.utils.EndlessScrollListner;
-import com.training.yasser.popularmovies.utils.GridAdapter;
+import com.training.yasser.popularmovies.R;
+import com.training.yasser.popularmovies.fragments.SortDialogFragment;
+import com.training.yasser.popularmovies.models.Movie;
+import com.training.yasser.popularmovies.network.Connection;
+import com.training.yasser.popularmovies.interfaces.EndlessScrollListner;
+import com.training.yasser.popularmovies.adapters.GridAdapter;
 import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;

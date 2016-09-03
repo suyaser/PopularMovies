@@ -1,4 +1,4 @@
-package com.training.yasser.popularmovies.utils;
+package com.training.yasser.popularmovies.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

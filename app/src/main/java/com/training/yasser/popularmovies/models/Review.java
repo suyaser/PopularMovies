@@ -1,4 +1,4 @@
-package com.training.yasser.popularmovies.data;
+package com.training.yasser.popularmovies.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

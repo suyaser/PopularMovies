@@ -1,4 +1,4 @@
-package com.training.yasser.popularmovies;
+package com.training.yasser.popularmovies.fragments;
 
 
 import android.app.Activity;
@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+
+import com.training.yasser.popularmovies.R;
 
 /**
  * Created by yasser on 18/07/2016.

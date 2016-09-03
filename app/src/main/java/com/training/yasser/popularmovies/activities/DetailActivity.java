@@ -1,11 +1,10 @@
-package com.training.yasser.popularmovies;
+package com.training.yasser.popularmovies.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,10 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.training.yasser.popularmovies.data.Movie;
-import com.training.yasser.popularmovies.data.Review;
-import com.training.yasser.popularmovies.data.Trailer;
-import com.training.yasser.popularmovies.utils.Connection;
+import com.training.yasser.popularmovies.R;
+import com.training.yasser.popularmovies.models.Movie;
+import com.training.yasser.popularmovies.models.Review;
+import com.training.yasser.popularmovies.models.Trailer;
+import com.training.yasser.popularmovies.network.Connection;
 import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;

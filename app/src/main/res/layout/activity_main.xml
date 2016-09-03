@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ddd"
     android:orientation="vertical"
-    tools:context="com.training.yasser.popularmovies.MainActivity">
+    android:background="@color/colorPrimary"
+    tools:context=".activities.MainActivity">
 
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/mainBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:titleTextColor="@android:color/white" />
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/light_blue"
+        android:elevation="2dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gridView"
