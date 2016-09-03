@@ -1,4 +1,4 @@
-package com.training.yasser.popularmovies.utils;
+package com.training.yasser.popularmovies.interfaces;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

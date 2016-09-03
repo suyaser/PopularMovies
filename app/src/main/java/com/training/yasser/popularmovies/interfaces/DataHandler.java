@@ -1,7 +1,7 @@
-package com.training.yasser.popularmovies.utils;
+package com.training.yasser.popularmovies.interfaces;
 
 
-import com.training.yasser.popularmovies.data.Movie;
+import com.training.yasser.popularmovies.models.Movie;
 
 import java.util.List;
 
