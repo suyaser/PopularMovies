@@ -27,8 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SortDialogFragment.NoticeDialogListener, GridAdapter.ClickListener, LoaderCallbacks.LoaderListener {
     private final static String MOVIES_STATE = "MoviesState";
-    private final static String[] SORT = {"popular", "top_rated"};
-    private final static String[] BAR_TITLE = {"Popular Movies", "Top Rated Movies"};
+    private final static String[] BAR_TITLE = {"Most Popular Movies", "Top Rated Movies"};
     private static final String LIST_STATE = "ListState";
     private RecyclerView mRecyclerView;
     private GridAdapter mAdapter;
@@ -125,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements SortDialogFragmen
             LoaderManager loaderManager = getSupportLoaderManager();
             LoaderCallbacks<Movie> loaderCallbacks = new LoaderCallbacks<>(this);
             Bundle bundle = new Bundle();
-            bundle.putString(LoaderCallbacks.SORT_ORDER_KEY, SORT[sortOrder]);
+            bundle.putInt(LoaderCallbacks.SORT_ORDER_KEY, sortOrder);
             bundle.putInt(LoaderCallbacks.PAGE_KEY, mPage);
             loaderManager.restartLoader(LoaderCallbacks.MOVIE_LOADER_ID, bundle, loaderCallbacks);
         }

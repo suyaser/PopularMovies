@@ -67,7 +67,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         mRating = (TextView) findViewById(R.id.rating);
         mDate = (TextView) findViewById(R.id.date);
 
-
         loadReviews();
         loadTrailer();
         populateView();

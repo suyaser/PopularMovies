@@ -24,7 +24,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/GridImgItem"
                 android:layout_alignParentBottom="true"
                 android:layout_alignRight="@id/GridImgItem"
@@ -36,11 +36,24 @@
                     android:id="@+id/MovieTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="10dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/Base.TextAppearance.AppCompat.Small"
                     android:textColor="@android:color/black"
+                    />
+                <TextView
+                    android:id="@+id/MovieGenre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="äction, comedy"
+                    style="@style/Base.TextAppearance.AppCompat.Caption"
                     />
             </LinearLayout>
 

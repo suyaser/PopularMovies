@@ -16,6 +16,7 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
     public static final int REVIEW_LOADER_ID = 1;
     public static final int TRAILER_LOADER_ID = 2;
     public static final String SORT_ORDER_KEY = "sort order";
+    private final static String[] SORT = {"popular", "top_rated"};
     public static final String PAGE_KEY = "page";
     public static final String ID_KEY = "id";
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie/";
@@ -35,7 +36,7 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
         DataLoader<T> loader = null;
         switch (id){
             case MOVIE_LOADER_ID:
-                loader = new DataLoader((Context)listener, BASE_URL + args.getString(SORT_ORDER_KEY) + API_KEY +
+                loader = new DataLoader((Context)listener, BASE_URL + SORT[args.getInt(SORT_ORDER_KEY)] + API_KEY +
                         PAGE + args.getInt(PAGE_KEY) );
                 loader.setParser(new MovieParser());
                 break;
