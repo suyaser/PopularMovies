@@ -32,7 +32,7 @@ public class MovieParser extends Parser {
                 movies.add(new Movie(movie.getString("poster_path"),
                         movie.getString("original_title"),
                         movie.getString("overview"),
-                        movie.getInt("popularity"),
+                        movie.getDouble("vote_average"),
                         movie.getString("release_date"),
                         movie.getInt("id"),
                         movie.getString("backdrop_path"),

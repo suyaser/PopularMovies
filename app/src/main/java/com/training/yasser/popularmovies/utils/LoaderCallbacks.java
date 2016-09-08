@@ -15,6 +15,7 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
     public static final int MOVIE_LOADER_ID = 0;
     public static final int REVIEW_LOADER_ID = 1;
     public static final int TRAILER_LOADER_ID = 2;
+    public static final int ACTOR_LOADER_ID = 3;
     public static final String SORT_ORDER_KEY = "sort order";
     private final static String[] SORT = {"popular", "top_rated"};
     public static final String PAGE_KEY = "page";
@@ -24,6 +25,7 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
     private static final String API_KEY = "?api_key=336043898c0bea0b096943d0349c541c";
     private static final String TRAILER = "/videos";
     private static final String REVIEW = "/reviews";
+    private static final String ACTOR = "/credits";
     private final LoaderListener<T> listener;
 
 
@@ -47,6 +49,10 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
             case TRAILER_LOADER_ID:
                 loader = new DataLoader((Context)listener, BASE_URL +  args.getInt(ID_KEY) + TRAILER + API_KEY);
                 loader.setParser(new TrailerParser());
+                break;
+            case ACTOR_LOADER_ID:
+                loader = new DataLoader((Context)listener, BASE_URL +  args.getInt(ID_KEY) + ACTOR + API_KEY);
+                loader.setParser(new ActorParser());
                 break;
         }
         return loader;

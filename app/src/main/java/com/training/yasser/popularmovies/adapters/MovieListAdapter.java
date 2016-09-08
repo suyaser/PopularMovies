@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Movie;
 import com.training.yasser.popularmovies.R;
+import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +21,20 @@ import java.util.List;
 /**
  * Created by yasser on 17/07/2016.
  */
-public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_HEADER = 0;
     private static final int VIEW_ITEM = 1;
-    private Context context;
+    private final Context context;
     private List<Movie> movies;
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private ClickListener onClickListener;
     private String headerTitle;
 
-    public GridAdapter(Context context, ArrayList<Movie> movies) {
+    public MovieListAdapter(Context context, ArrayList<Movie> movies) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
         this.movies = movies;
+        onClickListener = (ClickListener) context;
     }
 
     @Override
@@ -76,10 +79,6 @@ public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void setOnClickListener(ClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
-
     public void setHeaderTitle(String headerTitle) {
         this.headerTitle = headerTitle;
     }
@@ -100,12 +99,8 @@ public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            onClickListener.onClick(v, getAdapterPosition() - 1);
+            onClickListener.onClick(v, getAdapterPosition() - 1, LoaderCallbacks.MOVIE_LOADER_ID);
         }
-    }
-
-    public interface ClickListener {
-        void onClick(View view, int position);
     }
 
     class HeaderHolder extends RecyclerView.ViewHolder {

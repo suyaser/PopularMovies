@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@android:color/white"
     tools:context=".activities.DetailActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -21,7 +22,7 @@
             android:fitsSystemWindows="true"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+            app:layout_scrollFlags="scroll">
 
             <ImageView
                 android:id="@+id/backDrop"
@@ -68,27 +69,31 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/poster"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="120dp"
+                    android:layout_height="180dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/placeholder" />
 
                 <TextView
                     android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:layout_margin="8dp"
-                    android:layout_toRightOf="@id/poster" />
+                    android:layout_toRightOf="@id/poster"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/date"
@@ -111,10 +116,101 @@
 
             <TextView
                 android:id="@+id/plot"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="16dp"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/gray"/>
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:textAllCaps="true"
+                android:text="Trailers"
+                android:textColor="@android:color/black" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/TrailerList"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/gray"/>
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:textAllCaps="true"
+                android:text="cast &amp; crew"
+                android:textColor="@android:color/black" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/ActorList"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/gray"/>
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:textAllCaps="true"
+                android:text="critic reviews"
+                android:textColor="@android:color/black" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/ReviewList"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_anchor="@id/detail.appbar"
+        android:layout_margin="16dp"
+        app:fabSize="normal"
+        android:clickable="true"
+        app:layout_anchorGravity="bottom|right|end"
+        android:src="@drawable/ic_favorite_border_white_24dp"/>
 </android.support.design.widget.CoordinatorLayout>

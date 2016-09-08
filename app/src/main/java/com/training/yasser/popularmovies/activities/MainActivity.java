@@ -16,21 +16,22 @@ import android.view.View;
 
 import com.training.yasser.popularmovies.R;
 import com.training.yasser.popularmovies.fragments.SortDialogFragment;
+import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Movie;
 import com.training.yasser.popularmovies.network.Connection;
 import com.training.yasser.popularmovies.interfaces.EndlessScrollListner;
-import com.training.yasser.popularmovies.adapters.GridAdapter;
+import com.training.yasser.popularmovies.adapters.MovieListAdapter;
 import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SortDialogFragment.NoticeDialogListener, GridAdapter.ClickListener, LoaderCallbacks.LoaderListener {
+public class MainActivity extends AppCompatActivity implements SortDialogFragment.NoticeDialogListener, ClickListener, LoaderCallbacks.LoaderListener {
     private final static String MOVIES_STATE = "MoviesState";
     private final static String[] BAR_TITLE = {"Most Popular Movies", "Top Rated Movies"};
     private static final String LIST_STATE = "ListState";
     private RecyclerView mRecyclerView;
-    private GridAdapter mAdapter;
+    private MovieListAdapter mAdapter;
     private ArrayList<Movie> movies;
     private int sortOrder;
     private Parcelable state = null;
@@ -54,11 +55,9 @@ public class MainActivity extends AppCompatActivity implements SortDialogFragmen
         }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.gridView);
-        mAdapter = new GridAdapter(this, movies);
-        mAdapter.setOnClickListener(this);
+        mAdapter = new MovieListAdapter(this, movies);
         mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(true);
         final GridLayoutManager manager = new GridLayoutManager(this, getResources().getInteger(R.integer.main_grid_columbs));
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements SortDialogFragmen
 
 
     @Override
-    public void onClick(View view, int position) {
+    public void onClick(View view, int position, int type) {
         Intent i = new Intent(this, DetailActivity.class);
         i.putExtra(DetailActivity.TAG, movies.get(position));
         startActivity(i);

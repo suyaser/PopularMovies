@@ -14,13 +14,13 @@ public class Movie implements Parcelable{
     private String mImg;
     private String mTitle;
     private String mPlot;
-    private int mRating;
+    private double mRating;
     private String mRelDate;
     private int mId;
     private String mBackDrop;
     private ArrayList<Integer> mGenre;
 
-    public Movie(String mImg, String mTitle, String mPlot, int mRating, String mRelDate, int mId, String mBackDrop, ArrayList<Integer> mGenre) {
+    public Movie(String mImg, String mTitle, String mPlot, double mRating, String mRelDate, int mId, String mBackDrop, ArrayList<Integer> mGenre) {
         this.mRelDate = mRelDate;
         this.mImg = mImg;
         this.mTitle = mTitle;
@@ -35,7 +35,7 @@ public class Movie implements Parcelable{
         mImg = in.readString();
         mTitle = in.readString();
         mPlot = in.readString();
-        mRating = in.readInt();
+        mRating = in.readDouble();
         mRelDate = in.readString();
         mId = in.readInt();
         mBackDrop = in.readString();
@@ -54,7 +54,7 @@ public class Movie implements Parcelable{
         return mPlot;
     }
 
-    public int getmRating() {
+    public double getmRating() {
         return mRating;
     }
 
@@ -84,7 +84,7 @@ public class Movie implements Parcelable{
         dest.writeString(mImg);
         dest.writeString(mTitle);
         dest.writeString(mPlot);
-        dest.writeInt(mRating);
+        dest.writeDouble(mRating);
         dest.writeString(mRelDate);
         dest.writeInt(mId);
         dest.writeString(mBackDrop);
