@@ -1,7 +1,9 @@
 package com.training.yasser.popularmovies.activities;
 
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
@@ -22,13 +24,15 @@ import com.training.yasser.popularmovies.network.Connection;
 import com.training.yasser.popularmovies.interfaces.EndlessScrollListner;
 import com.training.yasser.popularmovies.adapters.MovieListAdapter;
 import com.training.yasser.popularmovies.utils.LoaderCallbacks;
+import com.training.yasser.popularmovies.utils.MovieProvider;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SortDialogFragment.NoticeDialogListener, ClickListener, LoaderCallbacks.LoaderListener {
     private final static String MOVIES_STATE = "MoviesState";
-    private final static String[] BAR_TITLE = {"Most Popular Movies", "Top Rated Movies"};
+    private final static String[] BAR_TITLE = {"Most Popular Movies", "Top Rated Movies", "Favorites"};
     private static final String LIST_STATE = "ListState";
     private RecyclerView mRecyclerView;
     private MovieListAdapter mAdapter;
@@ -80,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements SortDialogFragmen
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateFavDB();
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -119,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements SortDialogFragmen
     }
 
     private void updateMovies() {
+        if(sortOrder == 2){
+            updateFavDB();
+            return;
+        }
+
         if (Connection.checkConnection(this)) {
             LoaderManager loaderManager = getSupportLoaderManager();
             LoaderCallbacks<Movie> loaderCallbacks = new LoaderCallbacks<>(this);
@@ -127,6 +141,37 @@ public class MainActivity extends AppCompatActivity implements SortDialogFragmen
             bundle.putInt(LoaderCallbacks.PAGE_KEY, mPage);
             loaderManager.restartLoader(LoaderCallbacks.MOVIE_LOADER_ID, bundle, loaderCallbacks);
         }
+    }
+
+    private void updateFavDB() {
+        ContentResolver resolver = getContentResolver();
+        Cursor cursor =
+                resolver.query(MovieProvider.MOVIE_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+        ArrayList<Movie> data = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            data.add(new Movie(cursor.getString(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_IMG)),
+                    cursor.getString(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_PLOT)),
+                    cursor.getDouble(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_RATING)),
+                    cursor.getString(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_RELDATE)),
+                    cursor.getInt(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_MOVIE_ID)),
+                    cursor.getString(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_BACKDROP)),
+                    stringToList(cursor.getString(cursor.getColumnIndex(MovieProvider.KEY_COLUMN_GENRE)))));
+        }
+        cursor.close();
+        movies.clear();
+        mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
+        movies.addAll(data);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<String> stringToList(String data) {
+        String[] array = data.split(",");
+        return new ArrayList<String>(Arrays.asList(array));
     }
 
 

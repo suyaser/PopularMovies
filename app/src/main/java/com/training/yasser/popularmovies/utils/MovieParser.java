@@ -23,10 +23,10 @@ public class MovieParser extends Parser {
             for (int i = 0; i < moviesArray.length(); i++){
                 JSONObject movie = moviesArray.getJSONObject(i);
                 JSONArray genres = movie.getJSONArray("genre_ids");
-                ArrayList<Integer> list = new ArrayList<>();
+                ArrayList<String> list = new ArrayList<>();
 
                 for (int j=0; j<genres.length(); j++) {
-                    list.add(genres.getInt(j));
+                    list.add(Integer.toString(genres.getInt(j)));
                 }
 
                 movies.add(new Movie(movie.getString("poster_path"),

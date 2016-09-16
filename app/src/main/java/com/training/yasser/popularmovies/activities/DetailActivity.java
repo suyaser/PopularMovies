@@ -1,9 +1,13 @@
 package com.training.yasser.popularmovies.activities;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +30,7 @@ import com.training.yasser.popularmovies.models.Review;
 import com.training.yasser.popularmovies.models.Trailer;
 import com.training.yasser.popularmovies.network.Connection;
 import com.training.yasser.popularmovies.utils.LoaderCallbacks;
+import com.training.yasser.popularmovies.utils.MovieProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     private static final String REVIEWS_STATE = "reviews state";
     private static final String MOVIE_STATE = "movie state";
     private static final String ACTORS_STATE = "actor state";
+    private static final String FAVOURITE_STATE = "favourite state";
+
     private Movie mMovie;
     private ImageView mPoster;
     private ImageView mBackDrop;
@@ -44,6 +51,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     private TextView mPlot;
     private TextView mRating;
     private TextView mDate;
+    private FloatingActionButton mFavouriteButton;
     private ArrayList<Trailer> trailers;
     private ArrayList<Review> reviews;
     private RecyclerView mTrailerRecyclerView;
@@ -53,6 +61,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     private RecyclerView mActorRecyclerView;
     private ActorListAdapter mActorAdapter;
     private ArrayList<Actor> actors;
+    private boolean favorite = false;
 
 
     @Override
@@ -75,6 +84,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
             reviews = savedInstanceState.getParcelableArrayList(REVIEWS_STATE);
             actors = savedInstanceState.getParcelableArrayList(ACTORS_STATE);
             mMovie = savedInstanceState.getParcelable(MOVIE_STATE);
+            favorite = savedInstanceState.getBoolean(FAVOURITE_STATE);
         }
 
         mBackDrop = (ImageView) findViewById(R.id.backDrop);
@@ -83,6 +93,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         mPlot = (TextView) findViewById(R.id.plot);
         mRating = (TextView) findViewById(R.id.rating);
         mDate = (TextView) findViewById(R.id.date);
+        mFavouriteButton = (FloatingActionButton) findViewById(R.id.FavoriteButton);
 
         if (Connection.checkConnection(this)) {
             loadReviews();
@@ -113,6 +124,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         outState.putParcelableArrayList(REVIEWS_STATE, reviews);
         outState.putParcelableArrayList(ACTORS_STATE, actors);
         outState.putParcelable(MOVIE_STATE, mMovie);
+        outState.putBoolean(FAVOURITE_STATE, favorite);
         super.onSaveInstanceState(outState);
     }
 
@@ -157,6 +169,32 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         mPlot.setText(mMovie.getmPlot());
         mRating.setText(Double.toString(mMovie.getmRating()));
         mDate.setText(mMovie.getmRelDate());
+
+        ContentResolver resolver = getContentResolver();
+        String selection = MovieProvider.KEY_COLUMN_MOVIE_ID + " = ?";
+        String[] selectionArgs = { "" + mMovie.getmId() };
+        Cursor cursor =
+                resolver.query(MovieProvider.MOVIE_URI,
+                        null,
+                        selection,
+                        selectionArgs,
+                        null);
+        if(cursor.getCount() == 0){
+            Log.d("ddddd", "null");
+            favorite = false;
+        }else{
+            Log.d("ddddd", "not null");
+            favorite = true;
+        }
+        updateFloatingButton();
+    }
+
+    private void updateFloatingButton() {
+        if(favorite){
+            mFavouriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
+        }else{
+            mFavouriteButton.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+        }
     }
 
     public void openVideo(View v) {
@@ -217,5 +255,39 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
                 openReview(reviews.get(position).getmUrl());
                 break;
         }
+    }
+
+    public void FavButton(View view) {
+        ContentResolver resolver = getContentResolver();
+        if(favorite){
+            String selection = MovieProvider.KEY_COLUMN_MOVIE_ID + " = ?";
+            String[] selectionArgs = { "" + mMovie.getmId() };
+            resolver.delete(MovieProvider.MOVIE_URI, selection, selectionArgs);
+            favorite = false;
+        }else {
+            ContentValues values = new ContentValues();
+            values.put(MovieProvider.KEY_COLUMN_IMG, mMovie.getmImg());
+            values.put(MovieProvider.KEY_COLUMN_TITLE, mMovie.getmTitle());
+            values.put(MovieProvider.KEY_COLUMN_PLOT, mMovie.getmPlot());
+            values.put(MovieProvider.KEY_COLUMN_RATING, mMovie.getmRating());
+            values.put(MovieProvider.KEY_COLUMN_RELDATE, mMovie.getmRelDate());
+            values.put(MovieProvider.KEY_COLUMN_MOVIE_ID, mMovie.getmId());
+            values.put(MovieProvider.KEY_COLUMN_BACKDROP, mMovie.getmBackDrop());
+            values.put(MovieProvider.KEY_COLUMN_GENRE, convertToString(mMovie.getmGenre()));
+            resolver.insert(MovieProvider.MOVIE_URI, values);
+            favorite = true;
+        }
+        updateFloatingButton();
+    }
+
+    private String convertToString(ArrayList<String> list) {
+        StringBuilder builder = new StringBuilder();
+        for (String item : list) {
+            builder.append(item);
+            builder.append(",");
+        }
+        builder.setLength(builder.length() - 1);
+        return builder.toString();
+
     }
 }

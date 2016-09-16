@@ -28,6 +28,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.yasser.popularmovies"
+            android:name=".utils.MovieProvider"/>
     </application>
 
 </manifest>

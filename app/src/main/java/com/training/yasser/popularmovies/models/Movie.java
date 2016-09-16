@@ -18,9 +18,9 @@ public class Movie implements Parcelable{
     private String mRelDate;
     private int mId;
     private String mBackDrop;
-    private ArrayList<Integer> mGenre;
+    private ArrayList<String> mGenre;
 
-    public Movie(String mImg, String mTitle, String mPlot, double mRating, String mRelDate, int mId, String mBackDrop, ArrayList<Integer> mGenre) {
+    public Movie(String mImg, String mTitle, String mPlot, double mRating, String mRelDate, int mId, String mBackDrop, ArrayList<String> mGenre) {
         this.mRelDate = mRelDate;
         this.mImg = mImg;
         this.mTitle = mTitle;
@@ -39,7 +39,7 @@ public class Movie implements Parcelable{
         mRelDate = in.readString();
         mId = in.readInt();
         mBackDrop = in.readString();
-        mGenre = (ArrayList<Integer>)in.readSerializable();
+        mGenre = (ArrayList<String>)in.readSerializable();
     }
 
     public String getmImg() {
@@ -70,7 +70,7 @@ public class Movie implements Parcelable{
         return BASE_URL_HIGH + mBackDrop;
     }
 
-    public ArrayList<Integer> getmGenre() {
+    public ArrayList<String> getmGenre() {
         return mGenre;
     }
 
