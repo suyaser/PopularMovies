@@ -1,6 +1,6 @@
 package com.training.yasser.popularmovies.adapters;
 
-import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +20,15 @@ import java.util.ArrayList;
  */
 public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.TrailerViewHolder> {
     private final LayoutInflater mInflater;
-    private final Context context;
+    private final Fragment fragment;
     private ArrayList<Trailer> mTrailers;
     private ClickListener onClickListener;
 
-    public TrailerListAdapter(Context context, ArrayList<Trailer> trailers) {
-        mInflater = LayoutInflater.from(context);
-        this.context = context;
+    public TrailerListAdapter(Fragment fragment, ArrayList<Trailer> trailers) {
+        mInflater = LayoutInflater.from(fragment.getContext());
+        this.fragment = fragment;
         this.mTrailers = trailers;
-        onClickListener = (ClickListener)context;
+        onClickListener = (ClickListener)fragment;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
         Trailer trailer = mTrailers.get(position);
         Glide
-                .with(context)
+                .with(fragment)
                 .load(trailer.getTumbnailUrl())
                 .into(holder.thumbnail);
     }

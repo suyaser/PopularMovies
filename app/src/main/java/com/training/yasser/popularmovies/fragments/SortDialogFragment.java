@@ -18,18 +18,13 @@ public class SortDialogFragment extends DialogFragment {
     NoticeDialogListener mListener;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         try {
-            mListener = (NoticeDialogListener) activity;
+            mListener = (NoticeDialogListener) getTargetFragment();
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(getTargetFragment().toString()
                     + " must implement NoticeDialogListener");
         }
-    }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(R.string.dialog_title_sort)

@@ -3,6 +3,7 @@ package com.training.yasser.popularmovies.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
@@ -27,10 +28,12 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
     private static final String REVIEW = "/reviews";
     private static final String ACTOR = "/credits";
     private final LoaderListener<T> listener;
+    private final Fragment fragment;
 
 
-    public LoaderCallbacks(Activity activity) {
-        listener = (LoaderListener<T>)activity;
+    public LoaderCallbacks(Fragment fragment) {
+        listener = (LoaderListener<T>)fragment;
+        this.fragment = fragment;
     }
 
     @Override
@@ -38,20 +41,20 @@ public class LoaderCallbacks<T> implements LoaderManager.LoaderCallbacks<List<T>
         DataLoader<T> loader = null;
         switch (id){
             case MOVIE_LOADER_ID:
-                loader = new DataLoader((Context)listener, BASE_URL + SORT[args.getInt(SORT_ORDER_KEY)] + API_KEY +
+                loader = new DataLoader(fragment.getContext(), BASE_URL + SORT[args.getInt(SORT_ORDER_KEY)] + API_KEY +
                         PAGE + args.getInt(PAGE_KEY) );
                 loader.setParser(new MovieParser());
                 break;
             case REVIEW_LOADER_ID:
-                loader = new DataLoader((Context)listener, BASE_URL + args.getInt(ID_KEY) + REVIEW + API_KEY);
+                loader = new DataLoader(fragment.getContext(), BASE_URL + args.getInt(ID_KEY) + REVIEW + API_KEY);
                 loader.setParser(new ReviewParser());
                 break;
             case TRAILER_LOADER_ID:
-                loader = new DataLoader((Context)listener, BASE_URL +  args.getInt(ID_KEY) + TRAILER + API_KEY);
+                loader = new DataLoader(fragment.getContext(), BASE_URL +  args.getInt(ID_KEY) + TRAILER + API_KEY);
                 loader.setParser(new TrailerParser());
                 break;
             case ACTOR_LOADER_ID:
-                loader = new DataLoader((Context)listener, BASE_URL +  args.getInt(ID_KEY) + ACTOR + API_KEY);
+                loader = new DataLoader(fragment.getContext(), BASE_URL +  args.getInt(ID_KEY) + ACTOR + API_KEY);
                 loader.setParser(new ActorParser());
                 break;
         }

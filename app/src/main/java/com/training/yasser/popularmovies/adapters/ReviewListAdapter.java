@@ -1,17 +1,15 @@
 package com.training.yasser.popularmovies.adapters;
 
-import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.training.yasser.popularmovies.R;
 import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Review;
-import com.training.yasser.popularmovies.models.Trailer;
 import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
@@ -21,14 +19,14 @@ import java.util.ArrayList;
  */
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ReviewViewHolder> {
     private final LayoutInflater mInflater;
-    private final Context context;
+    private final Fragment fragment;
     private ArrayList<Review> mReviews;
     private ClickListener onClickListener;
-    public ReviewListAdapter(Context context, ArrayList<Review> reviews) {
-        mInflater = LayoutInflater.from(context);
-        this.context = context;
+    public ReviewListAdapter(Fragment fragment, ArrayList<Review> reviews) {
+        mInflater = LayoutInflater.from(fragment.getContext());
+        this.fragment = fragment;
         this.mReviews = reviews;
-        onClickListener = (ClickListener)context;
+        onClickListener = (ClickListener)fragment;
 
     }
 

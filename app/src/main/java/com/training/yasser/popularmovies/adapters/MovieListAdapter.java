@@ -1,6 +1,6 @@
 package com.training.yasser.popularmovies.adapters;
 
-import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,17 +24,17 @@ import java.util.List;
 public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_HEADER = 0;
     private static final int VIEW_ITEM = 1;
-    private final Context context;
+    private final Fragment fragment;
     private List<Movie> movies;
     private final LayoutInflater mInflater;
     private ClickListener onClickListener;
     private String headerTitle;
 
-    public MovieListAdapter(Context context, ArrayList<Movie> movies) {
-        mInflater = LayoutInflater.from(context);
-        this.context = context;
+    public MovieListAdapter(Fragment fragment, ArrayList<Movie> movies) {
+        mInflater = LayoutInflater.from(fragment.getContext());
+        this.fragment = fragment;
         this.movies = movies;
-        onClickListener = (ClickListener) context;
+        onClickListener = (ClickListener) fragment;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (holder instanceof ItemHolder) {
             Movie movie = movies.get(position - 1);
             Glide
-                    .with(context)
+                    .with(fragment)
                     .load(movie.getmImg())
                     .into(((ItemHolder)holder).imgView);
             ((ItemHolder)holder).Title.setText(movie.getmTitle());

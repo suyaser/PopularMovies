@@ -1,7 +1,7 @@
 package com.training.yasser.popularmovies.adapters;
 
 import android.content.Context;
-import android.media.Image;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,14 +22,14 @@ import java.util.ArrayList;
  */
 public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.ActorViewHolder> {
     private final LayoutInflater mInflater;
-    private final Context context;
+    private final Fragment fragment;
     private ArrayList<Actor> mActors;
     private ClickListener onClickListener;
-    public ActorListAdapter(Context context, ArrayList<Actor> actors) {
-        mInflater = LayoutInflater.from(context);
-        this.context = context;
+    public ActorListAdapter(Fragment fragment, ArrayList<Actor> actors) {
+        mInflater = LayoutInflater.from(fragment.getContext());
+        this.fragment = fragment;
         this.mActors = actors;
-        onClickListener = (ClickListener)context;
+        onClickListener = (ClickListener)fragment;
 
     }
 
@@ -45,7 +45,7 @@ public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.Acto
         holder.mName.setText(actor.getmName());
         holder.mRole.setText(actor.getmCharacter());
         Glide
-                .with(context)
+                .with(fragment)
                 .load(actor.getmProfPic())
                 .into(holder.mProfPic);
 
