@@ -4,6 +4,8 @@
     <string name="action_sort">sort</string>
     <string name="ok">ok</string>
     <string name="dialog_title_sort">sort</string>
+    <string name="action_share">share</string>
+    <string name="send_to">share with ...</string>
     <string-array name="sort_array">
         <item>most popular</item>
         <item>top rated</item>

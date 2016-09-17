@@ -18,6 +18,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -111,11 +114,23 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.detailBar);
         if(!isTwopane) {
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.detailBar);
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }else{
+            toolbar.inflateMenu(R.menu.menu_detail);
+            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if(item.getItemId() == R.id.action_share){
+                        shareTrailer();
+                        return true;
+                    }
+                    return false;
+                }
+            });
         }
 
         mBackDrop = (ImageView) view.findViewById(R.id.backDrop);
@@ -224,10 +239,8 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
                         selectionArgs,
                         null);
         if (cursor.getCount() == 0) {
-            Log.d("ddddd", "null");
             favorite = false;
         } else {
-            Log.d("ddddd", "not null");
             favorite = true;
         }
         updateFloatingButton();
@@ -335,6 +348,31 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
         builder.setLength(builder.length() - 1);
         return builder.toString();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                shareTrailer();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void shareTrailer() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                Uri.parse("http://www.youtube.com/watch?v=" + trailers.get(0).getmKey()));
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail, menu);
     }
 
 }
