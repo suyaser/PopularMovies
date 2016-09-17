@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * Created by yasser on 17/09/2016.
  */
-public class ListFragment extends Fragment implements SortDialogFragment.NoticeDialogListener, ClickListener, LoaderCallbacks.LoaderListener {
+public class ListFragment extends Fragment implements ClickListener, LoaderCallbacks.LoaderListener {
 
 
     private final static String MOVIES_STATE = "MoviesState";
@@ -64,10 +65,6 @@ public class ListFragment extends Fragment implements SortDialogFragment.NoticeD
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setHasOptionsMenu(true);
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.mainBar);
-        ((MainActivity) getActivity()).setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
             movies = new ArrayList<Movie>();
@@ -108,6 +105,11 @@ public class ListFragment extends Fragment implements SortDialogFragment.NoticeD
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (sortOrder == 2) {
@@ -123,34 +125,6 @@ public class ListFragment extends Fragment implements SortDialogFragment.NoticeD
         outState.putInt(PAGE_STATE, mPage);
         outState.putInt(SORT_STATE, sortOrder);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_sort:
-                SortDialogFragment dialog = new SortDialogFragment();
-                dialog.setTargetFragment(this,0);
-                dialog.show(getFragmentManager(), "Dialog");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-    }
-
-    @Override
-    public void onDialogPositiveClick(int item) {
-        if (sortOrder != item) {
-            sortOrder = item;
-            mOrderChanged = true;
-            mPage = 1;
-            updateMovies();
-        }
     }
 
     private void updateMovies() {
@@ -200,7 +174,6 @@ public class ListFragment extends Fragment implements SortDialogFragment.NoticeD
         return new ArrayList<String>(Arrays.asList(array));
     }
 
-
     @Override
     public void onClick(View view, int position, int type) {
         listener.onItemSelected(movies.get(position));
@@ -216,6 +189,15 @@ public class ListFragment extends Fragment implements SortDialogFragment.NoticeD
             }
             movies.addAll(data);
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void Sort(int item) {
+        if (sortOrder != item) {
+            sortOrder = item;
+            mOrderChanged = true;
+            mPage = 1;
+            updateMovies();
         }
     }
 

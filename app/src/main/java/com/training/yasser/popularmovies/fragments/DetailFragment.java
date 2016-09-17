@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -46,6 +47,7 @@ import java.util.List;
 public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderListener, ClickListener {
 
     public static final String MOVIE_TAG = "movie tag";
+    private static final String Twopane_TAG = "twopane tag";
     private static final String TRAILERS_STATE = "trailers state";
     private static final String REVIEWS_STATE = "reviews state";
     private static final String MOVIE_STATE = "movie state";
@@ -70,12 +72,14 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     private ActorListAdapter mActorAdapter;
     private ArrayList<Actor> actors;
     private boolean favorite = false;
+    private boolean isTwopane = false;
 
 
-    public static DetailFragment newInstance(Movie movie) {
+    public static DetailFragment newInstance(Movie movie, boolean isTwoBane) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putParcelable(MOVIE_TAG, movie);
+        args.putBoolean(Twopane_TAG, isTwoBane);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,12 +93,14 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
             reviews = new ArrayList();
             actors = new ArrayList();
             mMovie = (Movie) getArguments().getParcelable(MOVIE_TAG);
+            isTwopane = getArguments().getBoolean(Twopane_TAG);
         } else {
             trailers = savedInstanceState.getParcelableArrayList(TRAILERS_STATE);
             reviews = savedInstanceState.getParcelableArrayList(REVIEWS_STATE);
             actors = savedInstanceState.getParcelableArrayList(ACTORS_STATE);
             mMovie = savedInstanceState.getParcelable(MOVIE_STATE);
             favorite = savedInstanceState.getBoolean(FAVOURITE_STATE);
+            isTwopane = savedInstanceState.getBoolean(Twopane_TAG);
         }
 
         return inflater.inflate(R.layout.fragment_detail,
@@ -105,10 +111,12 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.detailBar);
-        ((DetailActivity) getActivity()).setSupportActionBar(toolbar);
-        ((DetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((DetailActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(!isTwopane) {
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.detailBar);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         mBackDrop = (ImageView) view.findViewById(R.id.backDrop);
         mPoster = (ImageView) view.findViewById(R.id.poster);
@@ -117,6 +125,18 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
         mRating = (TextView) view.findViewById(R.id.rating);
         mDate = (TextView) view.findViewById(R.id.date);
         mFavouriteButton = (FloatingActionButton) view.findViewById(R.id.FavoriteButton);
+        mFavouriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FavButton(view);
+            }
+        });
+        mBackDrop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openVideo(view);
+            }
+        });
 
         if (Connection.checkConnection(getContext())) {
             loadReviews();
@@ -149,6 +169,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
         outState.putParcelableArrayList(ACTORS_STATE, actors);
         outState.putParcelable(MOVIE_STATE, mMovie);
         outState.putBoolean(FAVOURITE_STATE, favorite);
+        outState.putBoolean(Twopane_TAG, isTwopane);
         super.onSaveInstanceState(outState);
     }
 
