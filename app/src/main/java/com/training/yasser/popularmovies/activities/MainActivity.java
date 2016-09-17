@@ -36,7 +36,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ListFragment.OnListItemSelectedListener, SortDialogFragment.NoticeDialogListener {
 
-    private static final String FRAGMENT_TAG = "fragment tag";
     private boolean isTwoPane = false;
 
     @Override
@@ -53,9 +52,13 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnLi
     @Override
     public void onItemSelected(Movie movie) {
         if (isTwoPane) {
-            DetailFragment fragmentItem = DetailFragment.newInstance(movie, isTwoPane);
+            DetailFragment fragment = new DetailFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.MOVIE_TAG, movie);
+            args.putBoolean(DetailFragment.Twopane_TAG, isTwoPane);
+            fragment.setArguments(args);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.DetailFragment, fragmentItem);
+            ft.replace(R.id.DetailFragment, fragment);
             ft.commit();
         } else {
             Intent i = new Intent(this, DetailActivity.class);

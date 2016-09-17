@@ -11,7 +11,6 @@ import com.training.yasser.popularmovies.fragments.DetailFragment;
 import com.training.yasser.popularmovies.models.Movie;
 
 public class DetailActivity extends AppCompatActivity{
-    private DetailFragment detailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +19,13 @@ public class DetailActivity extends AppCompatActivity{
 
         Movie movie = (Movie) getIntent().getParcelableExtra(DetailFragment.MOVIE_TAG);
         if (savedInstanceState == null) {
-            detailFragment = DetailFragment.newInstance(movie, false);
+            DetailFragment fragment = new DetailFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.MOVIE_TAG, movie);
+            args.putBoolean(DetailFragment.Twopane_TAG, false);
+            fragment.setArguments(args);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.DetailFragment, detailFragment);
+            ft.replace(R.id.DetailFragment, fragment);
             ft.commit();
         }
     }
