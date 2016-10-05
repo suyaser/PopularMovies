@@ -15,6 +15,9 @@ import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by yasser on 07/09/2016.
  */
@@ -52,11 +55,11 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
     }
 
     class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView thumbnail;
+        @BindView(R.id.TrailerTumb) ImageView thumbnail;
 
         public TrailerViewHolder(View MovieView) {
             super(MovieView);
-            thumbnail = (ImageView) MovieView.findViewById(R.id.TrailerTumb);
+            ButterKnife.bind(this, MovieView);
             MovieView.setOnClickListener(this);
         }
 

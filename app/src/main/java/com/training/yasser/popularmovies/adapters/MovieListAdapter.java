@@ -18,6 +18,9 @@ import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by yasser on 17/07/2016.
  */
@@ -84,16 +87,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView imgView;
-        CardView cardView;
-        TextView Title;
+        @BindView(R.id.GridImgItem) ImageView imgView;
+        @BindView(R.id.GridCardView) CardView cardView;
+        @BindView(R.id.MovieTitle) TextView Title;
 
         public ItemHolder(View itemView) {
             super(itemView);
-            Title = (TextView) itemView.findViewById(R.id.MovieTitle);
+            ButterKnife.bind(this, itemView);
             Title.setSelected(true);
-            imgView = (ImageView) itemView.findViewById(R.id.GridImgItem);
-            cardView = (CardView) itemView.findViewById(R.id.GridCardView);
             cardView.setOnClickListener(this);
         }
 
@@ -104,11 +105,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class HeaderHolder extends RecyclerView.ViewHolder {
-        TextView OrderState;
+        @BindView(R.id.OrderTitle) TextView OrderState;
 
         public HeaderHolder(View itemView) {
             super(itemView);
-            OrderState = (TextView) itemView.findViewById(R.id.OrderTitle);
+            ButterKnife.bind(this, itemView);
         }
 
     }

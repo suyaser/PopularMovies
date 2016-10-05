@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by yasser on 17/09/2016.
  */
@@ -42,11 +46,15 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
 
 
     private final static String MOVIES_STATE = "MoviesState";
-    private static final String LIST_STATE = "ListState";
-    private static final String SORT_STATE = "sortState";
-    private static final String PAGE_STATE = "PageState";
+    private final static String LIST_STATE = "ListState";
+    private final static String SORT_STATE = "sortState";
+    private final static String PAGE_STATE = "PageState";
+
     private final static String[] BAR_TITLE = {"Most Popular Movies", "Top Rated Movies", "Favorites"};
-    private RecyclerView mRecyclerView;
+
+    @BindView(R.id.gridView) RecyclerView mRecyclerView;
+
+    Unbinder unbinder;
     private MovieListAdapter mAdapter;
     private ArrayList<Movie> movies;
     private int sortOrder;
@@ -65,6 +73,15 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
+
+        if (getActivity() instanceof OnListItemSelectedListener) {
+            listener = (OnListItemSelectedListener) getActivity();
+        } else {
+            throw new ClassCastException(
+                    getActivity().toString()
+                            + " must implement ItemsListFragment.OnListItemSelectedListener");
+        }
 
         if (savedInstanceState == null) {
             movies = new ArrayList<Movie>();
@@ -78,7 +95,6 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
             mPage = savedInstanceState.getInt(PAGE_STATE);
         }
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.gridView);
         mAdapter = new MovieListAdapter(this, movies);
         mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
         mRecyclerView.setAdapter(mAdapter);
@@ -105,8 +121,21 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onSaveInstanceState(Bundle outState) {
+        state = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelableArrayList(MOVIES_STATE, movies);
+        outState.putParcelable(LIST_STATE, state);
+        outState.putInt(PAGE_STATE, mPage);
+        outState.putInt(SORT_STATE, sortOrder);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        unbinder.unbind();
+        listener = null;
     }
 
     @Override
@@ -115,16 +144,6 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
         if (sortOrder == 2) {
             updateFavDB();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        state = mRecyclerView.getLayoutManager().onSaveInstanceState();
-        outState.putParcelableArrayList(MOVIES_STATE, movies);
-        outState.putParcelable(LIST_STATE, state);
-        outState.putInt(PAGE_STATE, mPage);
-        outState.putInt(SORT_STATE, sortOrder);
-        super.onSaveInstanceState(outState);
     }
 
     private void updateMovies() {
@@ -205,16 +224,5 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
         public void onItemSelected(Movie movie);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof OnListItemSelectedListener) {
-            listener = (OnListItemSelectedListener) activity;
-        } else {
-            throw new ClassCastException(
-                    activity.toString()
-                            + " must implement ItemsListFragment.OnListItemSelectedListener");
-        }
-    }
 
 }

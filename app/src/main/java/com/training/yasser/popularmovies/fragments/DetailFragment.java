@@ -44,6 +44,10 @@ import com.training.yasser.popularmovies.utils.MovieProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by yasser on 17/09/2016.
  */
@@ -51,6 +55,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
 
     public static final String MOVIE_TAG = "movie tag";
     public static final String Twopane_TAG = "twopane tag";
+
     private static final String TRAILERS_STATE = "trailers state";
     private static final String REVIEWS_STATE = "reviews state";
     private static final String MOVIE_STATE = "movie state";
@@ -58,29 +63,31 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     private static final String FAVOURITE_STATE = "favourite state";
 
     private Movie mMovie;
-    private ImageView mPoster;
-    private ImageView mBackDrop;
-    private TextView mTitle;
-    private TextView mPlot;
-    private TextView mRating;
-    private TextView mDate;
-    private FloatingActionButton mFavouriteButton;
+
+    @BindView(R.id.poster) ImageView mPoster;
+    @BindView(R.id.backDrop) ImageView mBackDrop;
+    @BindView(R.id.title) TextView mTitle;
+    @BindView(R.id.plot) TextView mPlot;
+    @BindView(R.id.rating) TextView mRating;
+    @BindView(R.id.date) TextView mDate;
+    @BindView(R.id.FavoriteButton) FloatingActionButton mFavouriteButton;
 
     private ArrayList<Trailer> trailers;
     private ArrayList<Review> reviews;
     private ArrayList<Actor> actors;
 
-    private RecyclerView mTrailerRecyclerView;
+    @BindView(R.id.TrailerList) RecyclerView mTrailerRecyclerView;
     private TrailerListAdapter mTrailerAdapter;
 
-    private RecyclerView mReviewRecyclerView;
+    @BindView(R.id.ReviewList) RecyclerView mReviewRecyclerView;
     private ReviewListAdapter mReviewAdapter;
 
-    private RecyclerView mActorRecyclerView;
+    @BindView(R.id.ActorList) RecyclerView mActorRecyclerView;
     private ActorListAdapter mActorAdapter;
 
     private boolean favorite = false;
     private boolean isTwopane = false;
+    private Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +115,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.detailBar);
         if (isTwopane) {
@@ -129,13 +137,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        mBackDrop = (ImageView) view.findViewById(R.id.backDrop);
-        mPoster = (ImageView) view.findViewById(R.id.poster);
-        mTitle = (TextView) view.findViewById(R.id.title);
-        mPlot = (TextView) view.findViewById(R.id.plot);
-        mRating = (TextView) view.findViewById(R.id.rating);
-        mDate = (TextView) view.findViewById(R.id.date);
-        mFavouriteButton = (FloatingActionButton) view.findViewById(R.id.FavoriteButton);
+
         mFavouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,22 +157,25 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
             loadActor();
         }
 
-        mTrailerRecyclerView = (RecyclerView) view.findViewById(R.id.TrailerList);
         mTrailerAdapter = new TrailerListAdapter(this, trailers);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
         mTrailerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        mActorRecyclerView = (RecyclerView) view.findViewById(R.id.ActorList);
         mActorAdapter = new ActorListAdapter(this, actors);
         mActorRecyclerView.setAdapter(mActorAdapter);
         mActorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        mReviewRecyclerView = (RecyclerView) view.findViewById(R.id.ReviewList);
         mReviewAdapter = new ReviewListAdapter(this, reviews);
         mReviewRecyclerView.setAdapter(mReviewAdapter);
         mReviewRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         populateView();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override

@@ -19,14 +19,18 @@ public class DetailActivity extends AppCompatActivity{
 
         Movie movie = (Movie) getIntent().getParcelableExtra(DetailFragment.MOVIE_TAG);
         if (savedInstanceState == null) {
-            DetailFragment fragment = new DetailFragment();
-            Bundle args = new Bundle();
-            args.putParcelable(DetailFragment.MOVIE_TAG, movie);
-            args.putBoolean(DetailFragment.Twopane_TAG, false);
-            fragment.setArguments(args);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.DetailFragment, fragment);
-            ft.commit();
+            startMovieFragment(movie);
         }
+    }
+
+    private void startMovieFragment(Movie movie) {
+        DetailFragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(DetailFragment.MOVIE_TAG, movie);
+        args.putBoolean(DetailFragment.Twopane_TAG, false);
+        fragment.setArguments(args);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.DetailFragment, fragment);
+        ft.commit();
     }
 }

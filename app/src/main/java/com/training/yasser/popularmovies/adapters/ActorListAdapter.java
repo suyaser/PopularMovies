@@ -17,6 +17,9 @@ import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by yasser on 08/09/2016.
  */
@@ -57,15 +60,13 @@ public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.Acto
     }
 
     class ActorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView mProfPic;
-        TextView mName;
-        TextView mRole;
+        @BindView(R.id.ActorPic) ImageView mProfPic;
+        @BindView(R.id.ActorName) TextView mName;
+        @BindView(R.id.ActorRole) TextView mRole;
 
         public ActorViewHolder(View MovieView) {
             super(MovieView);
-            mName = (TextView) MovieView.findViewById(R.id.ActorName);
-            mRole = (TextView) MovieView.findViewById(R.id.ActorRole);
-            mProfPic = (ImageView) MovieView.findViewById(R.id.ActorPic);
+            ButterKnife.bind(this, MovieView);
             MovieView.setOnClickListener(this);
         }
 

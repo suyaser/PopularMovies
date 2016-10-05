@@ -14,17 +14,18 @@ import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by yasser on 08/09/2016.
  */
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ReviewViewHolder> {
     private final LayoutInflater mInflater;
-    private final Fragment fragment;
     private ArrayList<Review> mReviews;
     private ClickListener onClickListener;
     public ReviewListAdapter(Fragment fragment, ArrayList<Review> reviews) {
         mInflater = LayoutInflater.from(fragment.getContext());
-        this.fragment = fragment;
         this.mReviews = reviews;
         onClickListener = (ClickListener)fragment;
 
@@ -50,13 +51,12 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
     }
 
     class ReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mAuthor;
-        TextView mContent;
+        @BindView(R.id.ReviewAuthor) TextView mAuthor;
+        @BindView(R.id.ReviewContent) TextView mContent;
 
         public ReviewViewHolder(View MovieView) {
             super(MovieView);
-            mAuthor = (TextView) MovieView.findViewById(R.id.ReviewAuthor);
-            mContent = (TextView) MovieView.findViewById(R.id.ReviewContent);
+            ButterKnife.bind(this, MovieView);
             MovieView.setOnClickListener(this);
         }
 
