@@ -7,23 +7,23 @@ import android.os.Parcelable;
  * Created by yasser on 29/08/2016.
  */
 public class Review implements Parcelable {
-    private String mId;
-    private String mAuthor;
-    private String mContent;
-    private String mUrl;
+    private String id;
+    private String author;
+    private String content;
+    private String url;
 
     public Review(String id, String author, String content, String url) {
-        mId = id;
-        mAuthor = author;
-        mContent = content;
-        mUrl = url;
+        this.id = id;
+        this.author = author;
+        this.content = content;
+        this.url = url;
     }
 
     public Review(Parcel in) {
-        mId = in.readString();
-        mAuthor = in.readString();
-        mContent = in.readString();
-        mUrl = in.readString();
+        id = in.readString();
+        author = in.readString();
+        content = in.readString();
+        url = in.readString();
     }
 
     @Override
@@ -33,26 +33,26 @@ public class Review implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mId);
-        dest.writeString(mAuthor);
-        dest.writeString(mContent);
-        dest.writeString(mUrl);
+        dest.writeString(id);
+        dest.writeString(author);
+        dest.writeString(content);
+        dest.writeString(url);
     }
 
-    public String getmId() {
-        return mId;
+    public String getId() {
+        return id;
     }
 
-    public String getmAuthor() {
-        return mAuthor;
+    public String getAuthor() {
+        return author;
     }
 
-    public String getmContent() {
-        return mContent;
+    public String getContent() {
+        return content;
     }
 
-    public String getmUrl() {
-        return mUrl;
+    public String getUrl() {
+        return url;
     }
 
     public static final Creator<Review> CREATOR = new Creator<Review>() {

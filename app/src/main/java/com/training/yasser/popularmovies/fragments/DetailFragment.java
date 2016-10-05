@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,17 +27,19 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.training.yasser.popularmovies.R;
-import com.training.yasser.popularmovies.activities.DetailActivity;
 import com.training.yasser.popularmovies.adapters.ActorListAdapter;
 import com.training.yasser.popularmovies.adapters.ReviewListAdapter;
 import com.training.yasser.popularmovies.adapters.TrailerListAdapter;
 import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Actor;
+import com.training.yasser.popularmovies.models.ActorResponse;
 import com.training.yasser.popularmovies.models.Movie;
 import com.training.yasser.popularmovies.models.Review;
+import com.training.yasser.popularmovies.models.ReviewResponse;
 import com.training.yasser.popularmovies.models.Trailer;
+import com.training.yasser.popularmovies.models.TrailerResponse;
 import com.training.yasser.popularmovies.network.Connection;
-import com.training.yasser.popularmovies.utils.LoaderCallbacks;
+import com.training.yasser.popularmovies.network.MovieDBApi;
 import com.training.yasser.popularmovies.utils.MovieProvider;
 
 import java.util.ArrayList;
@@ -47,11 +48,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by yasser on 17/09/2016.
  */
-public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderListener, ClickListener {
+public class DetailFragment extends Fragment implements ClickListener {
+
+    private static final String TAG = DetailFragment.class.getSimpleName();
+
+    public static final int MOVIE_LOADER_ID = 0;
+    public static final int REVIEW_LOADER_ID = 1;
+    public static final int TRAILER_LOADER_ID = 2;
+    public static final int ACTOR_LOADER_ID = 3;
 
     public static final String MOVIE_TAG = "movie tag";
     public static final String Twopane_TAG = "twopane tag";
@@ -64,25 +75,35 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
 
     private Movie mMovie;
 
-    @BindView(R.id.poster) ImageView mPoster;
-    @BindView(R.id.backDrop) ImageView mBackDrop;
-    @BindView(R.id.title) TextView mTitle;
-    @BindView(R.id.plot) TextView mPlot;
-    @BindView(R.id.rating) TextView mRating;
-    @BindView(R.id.date) TextView mDate;
-    @BindView(R.id.FavoriteButton) FloatingActionButton mFavouriteButton;
+    @BindView(R.id.poster)
+    ImageView mPoster;
+    @BindView(R.id.backDrop)
+    ImageView mBackDrop;
+    @BindView(R.id.title)
+    TextView mTitle;
+    @BindView(R.id.plot)
+    TextView mPlot;
+    @BindView(R.id.rating)
+    TextView mRating;
+    @BindView(R.id.date)
+    TextView mDate;
+    @BindView(R.id.FavoriteButton)
+    FloatingActionButton mFavouriteButton;
 
     private ArrayList<Trailer> trailers;
     private ArrayList<Review> reviews;
     private ArrayList<Actor> actors;
 
-    @BindView(R.id.TrailerList) RecyclerView mTrailerRecyclerView;
+    @BindView(R.id.TrailerList)
+    RecyclerView mTrailerRecyclerView;
     private TrailerListAdapter mTrailerAdapter;
 
-    @BindView(R.id.ReviewList) RecyclerView mReviewRecyclerView;
+    @BindView(R.id.ReviewList)
+    RecyclerView mReviewRecyclerView;
     private ReviewListAdapter mReviewAdapter;
 
-    @BindView(R.id.ActorList) RecyclerView mActorRecyclerView;
+    @BindView(R.id.ActorList)
+    RecyclerView mActorRecyclerView;
     private ActorListAdapter mActorAdapter;
 
     private boolean favorite = false;
@@ -190,49 +211,76 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     }
 
     private void loadActor() {
-        LoaderCallbacks<Actor> loaderCallbacks = new LoaderCallbacks(this);
-        LoaderManager loaderManager = getLoaderManager();
-        Bundle bundle = new Bundle();
-        bundle.putInt(LoaderCallbacks.ID_KEY, mMovie.getmId());
-        loaderManager.restartLoader(LoaderCallbacks.ACTOR_LOADER_ID, bundle, loaderCallbacks);
+        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        Call<ActorResponse> call = movieDBApi.getActorList(mMovie.getId());
+        call.enqueue(new Callback<ActorResponse>() {
+            @Override
+            public void onResponse(Call<ActorResponse> call, Response<ActorResponse> response) {
+                loadFinished(ACTOR_LOADER_ID, response.body().getActors());
+                Log.d(TAG, "load actor list : " + response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<ActorResponse> call, Throwable t) {
+                Log.d(TAG, "load Actor list failed : " + t.getMessage());
+            }
+        });
     }
 
     private void loadReviews() {
-        LoaderCallbacks<Review> loaderCallbacks = new LoaderCallbacks(this);
-        LoaderManager loaderManager = getLoaderManager();
-        Bundle bundle = new Bundle();
-        bundle.putInt(LoaderCallbacks.ID_KEY, mMovie.getmId());
-        loaderManager.restartLoader(LoaderCallbacks.REVIEW_LOADER_ID, bundle, loaderCallbacks);
+        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        Call<ReviewResponse> call = movieDBApi.getReviewList(mMovie.getId());
+        call.enqueue(new Callback<ReviewResponse>() {
+            @Override
+            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+                loadFinished(REVIEW_LOADER_ID, response.body().getReviews());
+                Log.d(TAG, "load actor list : " + response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                Log.d(TAG, "load Review list failed : " + t.getMessage());
+            }
+        });
     }
 
     private void loadTrailer() {
-        LoaderCallbacks<Trailer> loaderCallbacks = new LoaderCallbacks(this);
-        LoaderManager loaderManager = getLoaderManager();
-        Bundle bundle = new Bundle();
-        bundle.putInt(LoaderCallbacks.ID_KEY, mMovie.getmId());
-        loaderManager.restartLoader(LoaderCallbacks.TRAILER_LOADER_ID, bundle, loaderCallbacks);
+        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        Call<TrailerResponse> call = movieDBApi.getTrailerList(mMovie.getId());
+        call.enqueue(new Callback<TrailerResponse>() {
+            @Override
+            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+                loadFinished(TRAILER_LOADER_ID, response.body().getTrailers());
+                Log.d(TAG, "load Review list : " + response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<TrailerResponse> call, Throwable t) {
+                Log.d(TAG, "load Review list failed : " + t.getMessage());
+            }
+        });
     }
 
     private void populateView() {
         Glide
                 .with(this)
-                .load(mMovie.getmImg())
+                .load(mMovie.getPosterPath())
                 .placeholder(R.drawable.placeholder)
                 .fitCenter()
                 .dontAnimate()
                 .into(mPoster);
         Glide
                 .with(this)
-                .load(mMovie.getmBackDrop())
+                .load(mMovie.getBackdropPath())
                 .into(mBackDrop);
-        mTitle.setText(mMovie.getmTitle());
-        mPlot.setText(mMovie.getmPlot());
-        mRating.setText(Double.toString(mMovie.getmRating()) + "/10");
-        mDate.setText(mMovie.getmRelDate());
+        mTitle.setText(mMovie.getTitle());
+        mPlot.setText(mMovie.getOverview());
+        mRating.setText(Double.toString(mMovie.getVoteAverage()) + "/10");
+        mDate.setText(mMovie.getReleaseDate());
 
         ContentResolver resolver = getContext().getContentResolver();
         String selection = MovieProvider.KEY_COLUMN_MOVIE_ID + " = ?";
-        String[] selectionArgs = {"" + mMovie.getmId()};
+        String[] selectionArgs = {"" + mMovie.getId()};
         Cursor cursor =
                 resolver.query(MovieProvider.MOVIE_URI,
                         null,
@@ -261,11 +309,11 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
 
     private void openVideo(int index) {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailers.get(index).getmKey()));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailers.get(index).getSource()));
             startActivity(intent);
         } catch (ActivityNotFoundException ex) {
             Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.youtube.com/watch?v=" + trailers.get(index).getmKey()));
+                    Uri.parse("http://www.youtube.com/watch?v=" + trailers.get(index).getSource()));
             startActivity(intent);
         }
     }
@@ -275,27 +323,26 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
         startActivity(i);
     }
 
-    @Override
-    public void loadFinished(int id, List data) {
+    private void loadFinished(int id, List data) {
         if (data == null || data.isEmpty()) {
             return;
         }
         switch (id) {
-            case LoaderCallbacks.REVIEW_LOADER_ID:
+            case REVIEW_LOADER_ID:
                 if (!reviews.isEmpty()) {
                     reviews.clear();
                 }
                 reviews.addAll(data);
                 mReviewAdapter.notifyDataSetChanged();
                 break;
-            case LoaderCallbacks.TRAILER_LOADER_ID:
+            case TRAILER_LOADER_ID:
                 if (!trailers.isEmpty()) {
                     trailers.clear();
                 }
                 trailers.addAll(data);
                 mTrailerAdapter.notifyDataSetChanged();
                 break;
-            case LoaderCallbacks.ACTOR_LOADER_ID:
+            case ACTOR_LOADER_ID:
                 if (!actors.isEmpty()) {
                     actors.clear();
                 }
@@ -308,11 +355,11 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
     @Override
     public void onClick(View view, int position, int type) {
         switch (type) {
-            case LoaderCallbacks.TRAILER_LOADER_ID:
+            case TRAILER_LOADER_ID:
                 openVideo(position);
                 break;
-            case LoaderCallbacks.REVIEW_LOADER_ID:
-                openReview(reviews.get(position).getmUrl());
+            case REVIEW_LOADER_ID:
+                openReview(reviews.get(position).getUrl());
                 break;
         }
     }
@@ -321,28 +368,28 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
         ContentResolver resolver = getContext().getContentResolver();
         if (favorite) {
             String selection = MovieProvider.KEY_COLUMN_MOVIE_ID + " = ?";
-            String[] selectionArgs = {"" + mMovie.getmId()};
+            String[] selectionArgs = {"" + mMovie.getId()};
             resolver.delete(MovieProvider.MOVIE_URI, selection, selectionArgs);
             favorite = false;
         } else {
             ContentValues values = new ContentValues();
-            values.put(MovieProvider.KEY_COLUMN_IMG, mMovie.getmImg());
-            values.put(MovieProvider.KEY_COLUMN_TITLE, mMovie.getmTitle());
-            values.put(MovieProvider.KEY_COLUMN_PLOT, mMovie.getmPlot());
-            values.put(MovieProvider.KEY_COLUMN_RATING, mMovie.getmRating());
-            values.put(MovieProvider.KEY_COLUMN_RELDATE, mMovie.getmRelDate());
-            values.put(MovieProvider.KEY_COLUMN_MOVIE_ID, mMovie.getmId());
-            values.put(MovieProvider.KEY_COLUMN_BACKDROP, mMovie.getmBackDrop());
-            values.put(MovieProvider.KEY_COLUMN_GENRE, convertToString(mMovie.getmGenre()));
+            values.put(MovieProvider.KEY_COLUMN_IMG, mMovie.getPosterPath());
+            values.put(MovieProvider.KEY_COLUMN_TITLE, mMovie.getTitle());
+            values.put(MovieProvider.KEY_COLUMN_PLOT, mMovie.getOverview());
+            values.put(MovieProvider.KEY_COLUMN_RATING, mMovie.getVoteAverage());
+            values.put(MovieProvider.KEY_COLUMN_RELDATE, mMovie.getReleaseDate());
+            values.put(MovieProvider.KEY_COLUMN_MOVIE_ID, mMovie.getId());
+            values.put(MovieProvider.KEY_COLUMN_BACKDROP, mMovie.getBackdropPath());
+            values.put(MovieProvider.KEY_COLUMN_GENRE, convertToString(mMovie.getGenreIds()));
             resolver.insert(MovieProvider.MOVIE_URI, values);
             favorite = true;
         }
         updateFloatingButton();
     }
 
-    private String convertToString(ArrayList<String> list) {
+    private String convertToString(List<Integer> list) {
         StringBuilder builder = new StringBuilder();
-        for (String item : list) {
+        for (int item : list) {
             builder.append(item);
             builder.append(",");
         }
@@ -364,7 +411,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks.LoaderLi
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                "http://www.youtube.com/watch?v=" + trailers.get(0).getmKey());
+                "http://www.youtube.com/watch?v=" + trailers.get(0).getSource());
         shareIntent.setType("text/plain");
         startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
     }

@@ -9,9 +9,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.training.yasser.popularmovies.R;
+import com.training.yasser.popularmovies.fragments.DetailFragment;
 import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Trailer;
-import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
 
         @Override
         public void onClick(View view) {
-            onClickListener.onClick(view, getAdapterPosition(), LoaderCallbacks.TRAILER_LOADER_ID);
+            onClickListener.onClick(view, getAdapterPosition(), DetailFragment.TRAILER_LOADER_ID);
         }
     }
 }

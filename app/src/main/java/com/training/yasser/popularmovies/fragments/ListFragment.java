@@ -1,34 +1,27 @@
 package com.training.yasser.popularmovies.fragments;
 
-import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.training.yasser.popularmovies.R;
-import com.training.yasser.popularmovies.activities.DetailActivity;
-import com.training.yasser.popularmovies.activities.MainActivity;
 import com.training.yasser.popularmovies.adapters.MovieListAdapter;
 import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.interfaces.EndlessScrollListner;
+import com.training.yasser.popularmovies.models.ActorResponse;
 import com.training.yasser.popularmovies.models.Movie;
+import com.training.yasser.popularmovies.models.MovieResponse;
 import com.training.yasser.popularmovies.network.Connection;
-import com.training.yasser.popularmovies.utils.LoaderCallbacks;
+import com.training.yasser.popularmovies.network.MovieDBApi;
 import com.training.yasser.popularmovies.utils.MovieProvider;
 
 import java.util.ArrayList;
@@ -38,17 +31,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by yasser on 17/09/2016.
  */
-public class ListFragment extends Fragment implements ClickListener, LoaderCallbacks.LoaderListener {
+public class ListFragment extends Fragment implements ClickListener {
 
-
+    private final static String TAG = ListFragment.class.getSimpleName();
     private final static String MOVIES_STATE = "MoviesState";
     private final static String LIST_STATE = "ListState";
     private final static String SORT_STATE = "sortState";
     private final static String PAGE_STATE = "PageState";
+    private final static String[] SORT = {"popular", "top_rated"};
 
     private final static String[] BAR_TITLE = {"Most Popular Movies", "Top Rated Movies", "Favorites"};
 
@@ -153,12 +150,36 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
         }
 
         if (Connection.checkConnection(getContext())) {
-            LoaderManager loaderManager = getLoaderManager();
-            LoaderCallbacks<Movie> loaderCallbacks = new LoaderCallbacks<>(this);
-            Bundle bundle = new Bundle();
-            bundle.putInt(LoaderCallbacks.SORT_ORDER_KEY, sortOrder);
-            bundle.putInt(LoaderCallbacks.PAGE_KEY, mPage);
-            loaderManager.restartLoader(LoaderCallbacks.MOVIE_LOADER_ID, bundle, loaderCallbacks);
+            LoadData();
+        }
+    }
+
+    private void LoadData() {
+        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        Call<MovieResponse> call = movieDBApi.getMovieList(SORT[sortOrder], mPage);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                Log.d(TAG, "Load movie list : " + String.valueOf(response.isSuccessful()));
+                loadFinished(response.body().getResults());
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d(TAG, "load Movie list failed : "+ t.getStackTrace().toString());
+            }
+        });
+    }
+
+    private void loadFinished(List<Movie> data) {
+        if (data != null && !data.isEmpty()) {
+            if (mOrderChanged) {
+                movies.clear();
+                mOrderChanged = false;
+                mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
+            }
+            movies.addAll(data);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -188,27 +209,18 @@ public class ListFragment extends Fragment implements ClickListener, LoaderCallb
         mAdapter.notifyDataSetChanged();
     }
 
-    private ArrayList<String> stringToList(String data) {
+    private ArrayList<Integer> stringToList(String data) {
         String[] array = data.split(",");
-        return new ArrayList<String>(Arrays.asList(array));
+        List<Integer> genreIds = new ArrayList<>();
+        for(String genre : array){
+            genreIds.add(Integer.valueOf(genre));
+        }
+        return (ArrayList<Integer>) genreIds;
     }
 
     @Override
     public void onClick(View view, int position, int type) {
         listener.onItemSelected(movies.get(position));
-    }
-
-    @Override
-    public void loadFinished(int id, List data) {
-        if (data != null && !data.isEmpty()) {
-            if (mOrderChanged) {
-                movies.clear();
-                mOrderChanged = false;
-                mAdapter.setHeaderTitle(BAR_TITLE[sortOrder]);
-            }
-            movies.addAll(data);
-            mAdapter.notifyDataSetChanged();
-        }
     }
 
     public void Sort(int item) {

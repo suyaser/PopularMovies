@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.training.yasser.popularmovies.fragments.DetailFragment;
 import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Movie;
 import com.training.yasser.popularmovies.R;
-import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +60,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Movie movie = movies.get(position - 1);
             Glide
                     .with(fragment)
-                    .load(movie.getmImg())
+                    .load(movie.getPosterPath())
                     .into(((ItemHolder)holder).imgView);
-            ((ItemHolder)holder).Title.setText(movie.getmTitle());
+            ((ItemHolder)holder).Title.setText(movie.getTitle());
         } else if (holder instanceof HeaderHolder) {
             ((HeaderHolder)holder).OrderState.setText(headerTitle);
         }
@@ -100,7 +100,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View v) {
-            onClickListener.onClick(v, getAdapterPosition() - 1, LoaderCallbacks.MOVIE_LOADER_ID);
+            onClickListener.onClick(v, getAdapterPosition() - 1, DetailFragment.MOVIE_LOADER_ID);
         }
     }
 

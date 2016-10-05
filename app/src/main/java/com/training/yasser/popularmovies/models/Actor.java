@@ -8,23 +8,23 @@ import android.os.Parcelable;
  */
 public class Actor implements Parcelable {
     private static final String BASE_URL = "http://image.tmdb.org/t/p/w185";
-    private String mId;
-    private String mCharacter;
-    private String mName;
-    private String mProfPic;
+    private String id;
+    private String character;
+    private String name;
+    private String profilePath;
 
     public Actor(String id, String character, String name, String profPic) {
-        mId = id;
-        mCharacter = character;
-        mName = name;
-        mProfPic = profPic;
+        this.id = id;
+        this.character = character;
+        this.name = name;
+        profilePath = profPic;
     }
 
     public Actor(Parcel in) {
-        mId = in.readString();
-        mCharacter = in.readString();
-        mName = in.readString();
-        mProfPic = in.readString();
+        id = in.readString();
+        character = in.readString();
+        name = in.readString();
+        profilePath = in.readString();
     }
 
     @Override
@@ -34,26 +34,26 @@ public class Actor implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mId);
-        dest.writeString(mCharacter);
-        dest.writeString(mName);
-        dest.writeString(mProfPic);
+        dest.writeString(id);
+        dest.writeString(character);
+        dest.writeString(name);
+        dest.writeString(profilePath);
     }
 
-    public String getmId() {
-        return mId;
+    public String getId() {
+        return id;
     }
 
-    public String getmCharacter() {
-        return mCharacter;
+    public String getCharacter() {
+        return character;
     }
 
-    public String getmName() {
-        return mName;
+    public String getName() {
+        return name;
     }
 
-    public String getmProfPic() {
-        return BASE_URL + mProfPic;
+    public String getProfilePath() {
+        return BASE_URL + profilePath;
     }
 
     public static final Creator<Actor> CREATOR = new Creator<Actor>() {

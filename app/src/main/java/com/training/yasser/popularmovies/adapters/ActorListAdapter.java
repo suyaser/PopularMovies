@@ -1,6 +1,5 @@
 package com.training.yasser.popularmovies.adapters;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import com.bumptech.glide.Glide;
 import com.training.yasser.popularmovies.R;
 import com.training.yasser.popularmovies.interfaces.ClickListener;
 import com.training.yasser.popularmovies.models.Actor;
-import com.training.yasser.popularmovies.utils.LoaderCallbacks;
 
 import java.util.ArrayList;
 
@@ -27,12 +25,10 @@ public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.Acto
     private final LayoutInflater mInflater;
     private final Fragment fragment;
     private ArrayList<Actor> mActors;
-    private ClickListener onClickListener;
     public ActorListAdapter(Fragment fragment, ArrayList<Actor> actors) {
         mInflater = LayoutInflater.from(fragment.getContext());
         this.fragment = fragment;
         this.mActors = actors;
-        onClickListener = (ClickListener)fragment;
 
     }
 
@@ -45,11 +41,11 @@ public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.Acto
     @Override
     public void onBindViewHolder(ActorViewHolder holder, int position) {
         Actor actor = mActors.get(position);
-        holder.mName.setText(actor.getmName());
-        holder.mRole.setText(actor.getmCharacter());
+        holder.mName.setText(actor.getName());
+        holder.mRole.setText(actor.getCharacter());
         Glide
                 .with(fragment)
-                .load(actor.getmProfPic())
+                .load(actor.getProfilePath())
                 .into(holder.mProfPic);
 
     }
@@ -59,7 +55,7 @@ public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.Acto
         return mActors.size();
     }
 
-    class ActorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ActorViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ActorPic) ImageView mProfPic;
         @BindView(R.id.ActorName) TextView mName;
         @BindView(R.id.ActorRole) TextView mRole;
@@ -67,12 +63,7 @@ public class ActorListAdapter extends RecyclerView.Adapter<ActorListAdapter.Acto
         public ActorViewHolder(View MovieView) {
             super(MovieView);
             ButterKnife.bind(this, MovieView);
-            MovieView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View view) {
-            onClickListener.onClick(view, getAdapterPosition(), LoaderCallbacks.ACTOR_LOADER_ID);
-        }
     }
 }

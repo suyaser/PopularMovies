@@ -7,20 +7,14 @@ import android.os.Parcelable;
  * Created by yasser on 29/08/2016.
  */
 public class Trailer implements Parcelable {
-    private String mId;
-    private String mLang;
-    private String mKey;
+    private String source;
 
-    public Trailer(String id, String lang, String key) {
-        mId = id;
-        mLang = lang;
-        mKey = key;
+    public Trailer(String key) {
+        source = key;
     }
 
     public Trailer(Parcel in) {
-        mId = in.readString();
-        mLang = in.readString();
-        mKey = in.readString();
+        source = in.readString();
     }
 
     @Override
@@ -30,21 +24,11 @@ public class Trailer implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mId);
-        dest.writeString(mLang);
-        dest.writeString(mKey);
+        dest.writeString(source);
     }
 
-    public String getmId() {
-        return mId;
-    }
-
-    public String getmLang() {
-        return mLang;
-    }
-
-    public String getmKey() {
-        return mKey;
+    public String getSource() {
+        return source;
     }
 
     public static final Creator<Trailer> CREATOR = new Creator<Trailer>() {
@@ -60,6 +44,6 @@ public class Trailer implements Parcelable {
     };
 
     public String getTumbnailUrl() {
-        return "http://img.youtube.com/vi/" + mKey + "/1.jpg";
+        return "http://img.youtube.com/vi/" + source + "/1.jpg";
     }
 }
