@@ -38,8 +38,8 @@ import com.training.yasser.popularmovies.models.Review;
 import com.training.yasser.popularmovies.models.ReviewResponse;
 import com.training.yasser.popularmovies.models.Trailer;
 import com.training.yasser.popularmovies.models.TrailerResponse;
+import com.training.yasser.popularmovies.network.ApiClient;
 import com.training.yasser.popularmovies.network.Connection;
-import com.training.yasser.popularmovies.network.MovieDBApi;
 import com.training.yasser.popularmovies.utils.MovieProvider;
 
 import java.util.ArrayList;
@@ -211,7 +211,7 @@ public class DetailFragment extends Fragment implements ClickListener {
     }
 
     private void loadActor() {
-        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        ApiClient.MovieDBApi movieDBApi = ApiClient.getMovieDBApi();
         Call<ActorResponse> call = movieDBApi.getActorList(mMovie.getId());
         call.enqueue(new Callback<ActorResponse>() {
             @Override
@@ -228,7 +228,7 @@ public class DetailFragment extends Fragment implements ClickListener {
     }
 
     private void loadReviews() {
-        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        ApiClient.MovieDBApi movieDBApi = ApiClient.getMovieDBApi();
         Call<ReviewResponse> call = movieDBApi.getReviewList(mMovie.getId());
         call.enqueue(new Callback<ReviewResponse>() {
             @Override
@@ -245,7 +245,7 @@ public class DetailFragment extends Fragment implements ClickListener {
     }
 
     private void loadTrailer() {
-        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        ApiClient.MovieDBApi movieDBApi = ApiClient.getMovieDBApi();
         Call<TrailerResponse> call = movieDBApi.getTrailerList(mMovie.getId());
         call.enqueue(new Callback<TrailerResponse>() {
             @Override

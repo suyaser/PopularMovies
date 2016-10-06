@@ -20,8 +20,8 @@ import com.training.yasser.popularmovies.interfaces.EndlessScrollListner;
 import com.training.yasser.popularmovies.models.ActorResponse;
 import com.training.yasser.popularmovies.models.Movie;
 import com.training.yasser.popularmovies.models.MovieResponse;
+import com.training.yasser.popularmovies.network.ApiClient;
 import com.training.yasser.popularmovies.network.Connection;
-import com.training.yasser.popularmovies.network.MovieDBApi;
 import com.training.yasser.popularmovies.utils.MovieProvider;
 
 import java.util.ArrayList;
@@ -155,7 +155,7 @@ public class ListFragment extends Fragment implements ClickListener {
     }
 
     private void LoadData() {
-        MovieDBApi movieDBApi = MovieDBApi.retrofit.create(MovieDBApi.class);
+        ApiClient.MovieDBApi movieDBApi = ApiClient.getMovieDBApi();
         Call<MovieResponse> call = movieDBApi.getMovieList(SORT[sortOrder], mPage);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
